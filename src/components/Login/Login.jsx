@@ -6,18 +6,20 @@ import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, val
 import { AuthContext } from '../../providers/AuthProvider';
 import { Helmet } from 'react-helmet-async';
 import Swal from 'sweetalert2';
+import SocialLogin from '../Shared/SocialLogin/SocialLogin';
 
 
 const Login = () => {
     const [disabled, setDisabled] = useState(true);
-    const {signIn} = useContext(AuthContext);
+    const { signIn } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
+    const [error, setError] = useState('');
 
     const from = location.state?.from?.pathname || "/";
 
-    useEffect( () =>{
-        loadCaptchaEnginge(6); 
+    useEffect(() => {
+        loadCaptchaEnginge(6);
     }, [])
 
     const handleLogin = event => {
@@ -28,29 +30,30 @@ const Login = () => {
         console.log(email, password)
 
         signIn(email, password)
-        .then(result => {
-            const loggedUser = result.user;
-            console.log(loggedUser)
-            Swal.fire({
-                position: 'top-center',
-                icon: 'success',
-                title: 'Your login has success',
-                showConfirmButton: false,
-                timer: 1500
-              })
-              navigate(from)
-        })
-        .catch(error =>{
-            console.log(error)
-        })
+            .then(result => {
+                const loggedUser = result.user;
+                console.log(loggedUser)
+                Swal.fire({
+                    position: 'top-center',
+                    icon: 'success',
+                    title: 'Your login has success',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                setError('')
+                navigate(from, {replace: true})
+            })
+            .catch(error => {
+                setError(error.message);
+            })
     }
 
-    const hanldeValidateCaptcha = e =>{
+    const hanldeValidateCaptcha = e => {
         const user_captcha_value = e.target.value;
-        if(validateCaptcha(user_captcha_value)){
+        if (validateCaptcha(user_captcha_value)) {
             setDisabled(false)
         }
-        else{
+        else {
             setDisabled(true)
         }
     }
@@ -71,8 +74,7 @@ const Login = () => {
                         <div className="card-body">
                             <h1 className="text-3xl font-bold text-center text-red-600">Login now!</h1>
 
-                            <p className='text-2xl text-center font-semibold text-green-600'></p>
-                            <p className='text-2xl text-center font-semibold text-orange-400'></p>
+                            <p className='text-2xl text-center font-semibold text-orange-400'>{error}</p>
 
                             <form onSubmit={handleLogin}>
                                 <div className="form-control">
@@ -101,12 +103,17 @@ const Login = () => {
                                     <button className="btn btn-outline btn-xs mt-2">validate</button>
 
                                 </div>
-                                
+
                                 {/* TODO: After this using diseabled for captcha */}
                                 <div className="form-control mt-6">
                                     <input disabled={false} className="btn btn-primary" type="submit" value="Login" />
                                 </div>
                             </form>
+
+                            <div className='text-center'>
+                                <SocialLogin></SocialLogin>
+                            </div>
+
                             <p className='text-center mt-5 font-semibold text-orange-500'>Don't Have An Account? <Link to="/register" className='text-lime-700 underline'>Register</Link></p>
 
                         </div>

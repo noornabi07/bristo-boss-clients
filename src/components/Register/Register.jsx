@@ -1,40 +1,54 @@
 import React, { useContext } from 'react';
 import registerImg from '../../assets/others/authentication2.png'
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Helmet } from 'react-helmet-async';
 import { AuthContext } from '../../providers/AuthProvider';
 import Swal from 'sweetalert2';
+import SocialLogin from '../Shared/SocialLogin/SocialLogin';
 
 const Register = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    const {createUser, updateUserProfile} = useContext(AuthContext);
+    const { createUser, updateUserProfile } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const onSubmit = data => {
-        console.log(data);
         createUser(data.email, data.password)
-        .then(result =>{
-            const newUser = result.user;
-            console.log(newUser)
-            updateUserProfile(data.name, data.photoURL)
-            .then(() =>{
-                console.log('user profile info updated')
-                reset()
-                Swal.fire({
-                    position: 'top-center',
-                    icon: 'success',
-                    title: 'Your account create succuss',
-                    showConfirmButton: false,
-                    timer: 1500
-                  })
-                  navigate("/")
+            .then(result => {
+                const newUser = result.user;
+                console.log(newUser)
+
+                updateUserProfile(data.name, data.photoURL)
+
+                    .then(() => {
+                        const saveUser = { name: data.name, email: data.email }
+                        fetch('http://localhost:5000/users', {
+                            method: 'POST',
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify(saveUser)
+                        })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.insertedId) {
+                                    reset();
+                                    Swal.fire({
+                                        position: 'top-center',
+                                        icon: 'success',
+                                        title: 'Your account create succuss',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    })
+                                    navigate('/')
+                                }
+                            })
+                    })
+                    .catch(error => console.log(error))
             })
-            .catch(error => console.log(error))
-        })
-        .catch(error =>{
-            console.log(error)
-        })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
 
@@ -70,7 +84,7 @@ const Register = () => {
                                     <label className="label">
                                         <span className="label-text font-bold">Photo URL</span>
                                     </label>
-                                    <input type="text" {...register("photoURL", { required: true })}  placeholder="Photo URL" className="input input-bordered" />
+                                    <input type="text" {...register("photoURL", { required: true })} placeholder="Photo URL" className="input input-bordered" />
                                     {errors.photoURL && <span className='text-red-500'>Photo is required</span>}
                                 </div>
 
@@ -115,6 +129,10 @@ const Register = () => {
                                 </div>
 
                             </form>
+
+                            <div className='text-center'>
+                                <SocialLogin></SocialLogin>
+                            </div>
                             <p className='text-center mt-5 font-semibold text-orange-500'>Have An Account? <Link to="/login" className='text-lime-700 underline'>Login</Link></p>
                         </div>
                     </div>

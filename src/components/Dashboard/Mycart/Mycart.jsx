@@ -44,7 +44,7 @@ const Mycart = () => {
             <Helmet>
                 <title>Bistro Boss | My Cart</title>
             </Helmet>
-            <div className='uppercase text-2xl font-semibold flex justify-between mb-5'>
+            <div className='uppercase text-2xl font-semibold flex justify-around mb-5'>
                 <h3>Total Cart Item: {cart.length}</h3>
                 <h3>Total Prices: ${total}</h3>
                 <button className="btn btn-sm btn-outline btn-warning">Pay</button>
