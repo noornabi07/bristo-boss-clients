@@ -1,8 +1,8 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { FaBars, FaBookmark, FaCalendar, FaForumbee, FaHome, FaShoppingCart, FaUsers, FaUtensils, FaWallet } from 'react-icons/fa';
-import UseCart from '../hook/useCart';
 import useAdmin from '../hook/useAdmin';
+import UseCart from '../hook/UseCart';
 
 
 const Dashboard = () => {
@@ -31,13 +31,13 @@ const Dashboard = () => {
                         isAdmin ? <>
 
                             <li>
-                                <NavLink to="/dashboard/home"><FaHome></FaHome> Admin Home</NavLink>
+                                <NavLink to="/dashboard/adminhome"><FaHome></FaHome> Admin Home</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/dashboard/reservation"><FaUtensils></FaUtensils> Add Items</NavLink>
+                                <NavLink to="/dashboard/addItem"><FaUtensils></FaUtensils> Add Items</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/dashboard/history"><FaBars></FaBars> Manage Items</NavLink>
+                                <NavLink to="/dashboard/manageItem"><FaBars></FaBars> Manage Items</NavLink>
                             </li>
                             <li>
                                 <NavLink to="/dashboard/mycart"><FaBookmark></FaBookmark> Manage Booking
@@ -52,7 +52,7 @@ const Dashboard = () => {
                             </li>
                         </> : <>
                             <li>
-                                <NavLink to="/dashboard/home"><FaHome></FaHome> User Home</NavLink>
+                                <NavLink to="/dashboard/userhome"><FaHome></FaHome> User Home</NavLink>
                             </li>
                             <li>
                                 <NavLink to="/dashboard/reservation"><FaCalendar></FaCalendar> Reservation</NavLink>
